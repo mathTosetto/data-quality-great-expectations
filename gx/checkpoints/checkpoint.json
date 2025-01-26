@@ -1,0 +1,20 @@
+{
+  "actions": [
+    {
+      "name": "update_my_site",
+      "site_names": [
+        "taxi_site"
+      ],
+      "type": "update_data_docs"
+    }
+  ],
+  "id": "921d2398-7505-406f-afd1-7dd870da30ce",
+  "name": "checkpoint",
+  "result_format": "COMPLETE",
+  "validation_definitions": [
+    {
+      "id": "148ce59a-376d-4248-adce-7c9b7f9adb8e",
+      "name": "validation definition"
+    }
+  ]
+}

@@ -1,0 +1,22 @@
+{
+  "data": {
+    "asset": {
+      "id": "4a2fdc6c-2655-42a0-bba8-20a6e4576dd9",
+      "name": "Taxi Asset"
+    },
+    "batch_definition": {
+      "id": "a195fddc-c2d1-479a-808b-c29e327ce453",
+      "name": "taxi_batch_definition"
+    },
+    "datasource": {
+      "id": "38b2407e-0858-492c-8e2c-24d16688091e",
+      "name": "pandas"
+    }
+  },
+  "id": "148ce59a-376d-4248-adce-7c9b7f9adb8e",
+  "name": "validation definition",
+  "suite": {
+    "id": "2fc0e527-e216-416d-9607-ce7728acb694",
+    "name": "taxi_suite_checks"
+  }
+}
