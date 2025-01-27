@@ -17,13 +17,13 @@ class GreatExpectationsChecker:
     Attributes:
         df (pd.DataFrame): The DataFrame containing the data to be validated.
         context (gx.core.data_context.DataContext): The Great Expectations context used to manage
-                                                    expectations, validations, and checkpoints.
+        expectations, validations, and checkpoints.
         data_source (gx.core.data_asset.DataAsset): The data source for the DataFrame.
         data_asset (gx.core.data_asset.DataAsset): The specific data asset associated with the DataFrame.
         batch_definition (gx.core.batch.BatchDefinition): The batch definition used for validation.
         batch (gx.core.batch.Batch): The batch associated with the validation.
         suite (gx.core.expectation_suite.ExpectationSuite): The expectation suite containing
-                                                            the defined expectations.
+        the defined expectations.
 
     Methods:
         __init__(df: pd.DataFrame, context_mode: str) -> None:
