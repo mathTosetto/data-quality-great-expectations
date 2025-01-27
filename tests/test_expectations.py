@@ -76,7 +76,6 @@ def mock_get_context():
         yield mock
 
 
-# @patch("src.great_expectations.expectations.gx.get_context")
 def test_initilization(mock_get_context, mock_df, mock_config):
     mock_context = mock_get_context.return_value
 
