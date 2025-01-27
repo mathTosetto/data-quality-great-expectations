@@ -95,11 +95,11 @@ fluent_datasources:
     assets:
       Taxi Asset:
         type: dataframe
-        id: 4a2fdc6c-2655-42a0-bba8-20a6e4576dd9
+        id: 0c8bcff6-33c2-40f7-8838-36bc9c178185
         batch_metadata: {}
         batch_definitions:
           taxi_batch_definition:
-            id: a195fddc-c2d1-479a-808b-c29e327ce453
+            id: 0755c9bd-267d-41fa-89b5-0a13f62102d2
             partitioner:
 analytics_enabled:
 data_context_id: 0536b04e-1bc4-44f8-a311-532563cc77df
