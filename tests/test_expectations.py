@@ -13,7 +13,7 @@ class MockConfig(Enum):
     DATA_ASSET: str = "mock_data_asset"
     SITE_NAME: str = "mock_site"
     SITE_CONFIG: Dict[str, str] = {"mock_key": "mock_value"}
-    SUITE_NAME = "mock_suite"
+    SUITE_NAME: str = "mock_suite"
 
 
 @pytest.fixture
