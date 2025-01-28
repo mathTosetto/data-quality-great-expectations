@@ -19,12 +19,14 @@ def mock_taxi_data_loader():
 
 
 def test_initilization(mock_taxi_data_loader):
+    # Asserts
     assert mock_taxi_data_loader.url == "https://mock.test"
     assert mock_taxi_data_loader.df == None
 
 
 @pytest.mark.parametrize("url", [1, 1.0, True, None, {}, [], object()])
 def test_not_initilized(url):
+    # Mock value
     with pytest.raises(ValueError, match="URL must be a string"):
         TaxiDataLoader(url)
 
@@ -33,11 +35,14 @@ def test_load_data_success(mock_taxi_data_loader, mock_csv_data, monkeypatch):
     def mock_read_csv(url):
         return mock_csv_data
 
+    # Mock value
     monkeypatch.setattr(pd, "read_csv", mock_read_csv)
     mock_taxi_data_loader.load_data()
 
+    # Call function
     result = mock_taxi_data_loader.df
 
+    # Asserts
     assert result is not None
     assert not result.empty
     assert isinstance(result, pd.DataFrame)
@@ -47,13 +52,17 @@ def test_load_data_success(mock_taxi_data_loader, mock_csv_data, monkeypatch):
 
 
 def test_load_data_failed(mock_taxi_data_loader, monkeypatch):
+    # Set parameters
     mock_csv_data = None
 
+    # Mock value
     monkeypatch.setattr(pd, "read_csv", mock_csv_data)
-
     mock_taxi_data_loader.load_data()
+
+    # Call function
     result = mock_taxi_data_loader.df
 
+    # Asserts
     assert result is None
 
 
@@ -61,11 +70,16 @@ def test_load_data_exception(mock_taxi_data_loader, monkeypatch, capfd):
     def mock_read_csv(url):
         raise Exception("Mocked CSV read error")
 
+    # Mock value
     monkeypatch.setattr(pd, "read_csv", mock_read_csv)
-
+    
+    # Call function
     mock_taxi_data_loader.load_data()
+
+    # Capture error
     captured = capfd.readouterr()
 
+    # Asserts
     assert "Error loading data: Mocked CSV read error" in captured.out
 
 
@@ -73,17 +87,24 @@ def test_get_data(mock_taxi_data_loader, mock_csv_data, monkeypatch):
     def mock_read_csv(url):
         return mock_csv_data
 
+    # Mock value
     monkeypatch.setattr(pd, "read_csv", mock_read_csv)
     mock_taxi_data_loader.load_data()
+
+    # Call function
     result = mock_taxi_data_loader.get_data()
 
+    # Asserts
     assert result is not None
     pd.testing.assert_frame_equal(result, mock_csv_data)
 
 
 def test_get_data_no_data(mock_taxi_data_loader):
+    # Set parameters
     mock_taxi_data_loader.df = None
 
+    # Call function
     result = mock_taxi_data_loader.get_data()
 
+    # Asserts
     assert result is None
