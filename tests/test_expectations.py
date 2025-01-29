@@ -171,7 +171,7 @@ def test_set_data_docs_site_except_branch(mock_get_context, mock_df, mock_config
 
 
 def test_set_batch_definition(mock_get_context, mock_df, mock_config):
-    # Mock instance)
+    # Mock instance
     mock_data_asset = MagicMock()
     mock_data_asset.set_data_asset = MagicMock()
     # Mock value
