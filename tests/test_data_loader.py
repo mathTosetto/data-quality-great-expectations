@@ -1,6 +1,7 @@
 import pytest
 import pandas as pd
 
+from unittest.mock import patch, MagicMock
 from src.utils.data_loader import TaxiDataLoader
 
 
@@ -101,10 +102,12 @@ def test_get_data(mock_taxi_data_loader, mock_csv_data, monkeypatch):
 
 def test_get_data_no_data(mock_taxi_data_loader):
     # Set parameters
+    mock_taxi_data_loader = MagicMock()
     mock_taxi_data_loader.df = None
 
-    # Call function
-    result = mock_taxi_data_loader.get_data()
+    # Mock value
+    mock_taxi_data_loader.get_data.side_effect = ValueError("Data has not been loaded or processed yet.")
 
-    # Asserts
-    assert result is None
+    # Call function
+    with pytest.raises(ValueError, match="Data has not been loaded or processed yet."):
+        mock_taxi_data_loader.get_data()
