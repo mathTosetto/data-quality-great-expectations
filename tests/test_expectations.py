@@ -229,13 +229,15 @@ def test_set_suite_existing_suite(mock_get_context, mock_df, mock_config):
     mock_context.suites.add.assert_not_called()
 
 
-@pytest.mark.skip(reason="Fix it later on")
-def test_set_suite_new_suite(mock_get_context, mock_df, mock_config):
+@patch("great_expectations.core.expectation_suite.ExpectationSuite")
+def test_set_suite_new_suite(mock_expectation_suite, mock_get_context, mock_df, mock_config):
     # Mock instance
     mock_new_suite = MagicMock()
+    
     # Mock value
     mock_context = mock_get_context.return_value
     mock_context.suites.get.return_value = None
+    mock_expectation_suite.return_value = mock_new_suite
     mock_context.suites.add_or_update.return_value = mock_new_suite
 
     # Call function
@@ -244,44 +246,97 @@ def test_set_suite_new_suite(mock_get_context, mock_df, mock_config):
     result.set_suite(mock_config.SUITE_NAME)
 
     # Assertions
-    # mock_context.suites.get.assert_called_once_with(mock_config.SUITE_NAME)
-    # mock_context.suites.add_or_update.assert_called_once()
+    mock_context.suites.get.assert_called_once_with(mock_config.SUITE_NAME)
+    mock_context.suites.add_or_update.assert_called_once()
     assert result.suite == mock_new_suite
 
 
-@pytest.mark.skip(reason="Fix it later on")
-def test_set_suite_exception_handling():
-    # Mock inputs
-    mock_df = MagicMock()
-    mock_context = MagicMock()
-    suite_name = "test_suite"
+@patch("great_expectations.core.expectation_suite.ExpectationSuite")
+def test_set_suite_exception_handling(mock_expectation_suite, mock_get_context, mock_df, mock_config):
+    # Mock instance
     mock_new_suite = MagicMock()
+    mock_expectation_suite.side_effect = ValueError("name must be provided as a non-empty string")
 
-    # Mock suite retrieval to raise an exception
+    # Mock value
+    mock_context = mock_get_context.return_value
     mock_context.suites.get.side_effect = Exception("Suite retrieval failed")
     mock_context.suites.add.return_value = mock_new_suite
 
-    # Create an instance of GreatExpectationsChecker
-    checker = GreatExpectationsChecker(mock_df, "mock_mode")
-    checker.context = mock_context
+    # Call function
+    result = GreatExpectationsChecker(mock_df, mock_config.CONTEXT_MODE)
+    result.context = mock_context
 
-    # Call the method to test
-    checker.set_suite(suite_name)
+    # Throw error
+    with pytest.raises(ValueError, match="name must be provided as a non-empty string"):
+        result.set_suite(mock_config.SUITE_NAME)
 
     # Assertions
-    mock_context.suites.get.assert_called_once_with(suite_name)
-    mock_context.suites.add.assert_called_once()
-    assert checker.suite == mock_new_suite
+    mock_context.suites.get.assert_called_once_with(mock_config.SUITE_NAME)
+    mock_context.suites.add.assert_not_called() 
 
-        # try:
-        #     self.suite = self.context.suites.get(suite_name)
-        #     if not self.suite:
-        #         self.suite = self.context.suites.add_or_update(
-        #             gx.core.expectation_suite.ExpectationSuite(name=suite_name)
-        #         )
-        # except Exception as e:
-        #     self.suite = self.context.suites.add(
-        #         gx.core.expectation_suite.ExpectationSuite(
-        #             name=suite_name,
-        #         )
-        #     )
+
+
+@patch("great_expectations.expectations.ExpectTableColumnsToMatchOrderedList")
+@patch("great_expectations.expectations.ExpectColumnValuesToBeOfType")
+@patch("great_expectations.expectations.ExpectColumnValuesToNotBeNull")
+@patch("great_expectations.expectations.ExpectColumnValuesToBeBetween")
+@patch("great_expectations.expectations.ExpectColumnValuesToBeInSet")
+@patch("great_expectations.expectations.ExpectTableRowCountToBeBetween")
+def test_create_expectations(
+    mock_row_count,
+    mock_in_set,
+    mock_between,
+    mock_not_null,
+    mock_column_type,
+    mock_columns_match
+):
+    # Mock instance
+    mock_suite = MagicMock()
+    result = MagicMock()
+    result.suite = mock_suite
+
+    # Mock values
+    mock_columns_match.return_value = MagicMock()
+    mock_column_type.return_value = MagicMock()
+    mock_not_null.return_value = MagicMock()
+    mock_between.return_value = MagicMock()
+    mock_in_set.return_value = MagicMock()
+    mock_row_count.return_value = MagicMock()
+
+    # Call function
+    GreatExpectationsChecker.create_expectations(result)
+
+    # Asserts
+    mock_suite.add_expectation.assert_any_call(mock_columns_match.return_value)
+    mock_suite.add_expectation.assert_any_call(mock_column_type.return_value)
+    mock_suite.add_expectation.assert_any_call(mock_not_null.return_value)
+    mock_suite.add_expectation.assert_any_call(mock_between.return_value)
+    mock_suite.add_expectation.assert_any_call(mock_in_set.return_value)
+    mock_suite.add_expectation.assert_any_call(mock_row_count.return_value)
+    assert mock_suite.add_expectation.call_count == 10
+
+
+def test_generate_data_docs(mock_get_context, mock_df, mock_config):
+    # Mock value
+    mock_context = mock_get_context
+
+    # Call function
+    result = GreatExpectationsChecker(mock_df, mock_config.CONTEXT_MODE)
+    result.context = mock_get_context
+    result.generate_data_docs(site_name=mock_config.SITE_NAME)
+
+    # Asserts
+    mock_context.build_data_docs.assert_called_once_with(site_names=mock_config.SITE_NAME)
+
+
+def test_open_report(mock_get_context, mock_df, mock_config):
+    # Mock value
+    mock_context = mock_get_context
+
+    # Call function
+    result = GreatExpectationsChecker(mock_df, mock_config.CONTEXT_MODE)
+    result.context = mock_context
+    result.open_report()
+
+    # Asserts
+    mock_context.open_data_docs.assert_called_once()
