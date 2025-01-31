@@ -78,7 +78,7 @@ def mock_get_context():
 
 
 def test_initilization(mock_get_context, mock_df, mock_config):
-    # Mock value
+    # Mocks
     mock_context = mock_get_context.return_value
 
     # Call function
@@ -92,12 +92,11 @@ def test_initilization(mock_get_context, mock_df, mock_config):
 
 
 def test_set_data_source(mock_get_context, mock_df, mock_config):
-    # Mock value
+    # Mocks
     mock_context = mock_get_context.return_value
-    # Mock instance
     mock_context.data_sources.add_or_update_pandas = MagicMock()
+
     expected_value = MagicMock()
-    # Mock value
     mock_context.data_sources.add_or_update_pandas.return_value = expected_value
 
     # Call function
@@ -112,10 +111,9 @@ def test_set_data_source(mock_get_context, mock_df, mock_config):
 
 
 def test_set_data_asset(mock_get_context, mock_df, mock_config):
-    # Mock instance
+    # Mocks
     mock_data_source = MagicMock()
     mock_data_source.add_dataframe_asset = MagicMock()
-    # Mock value
     mock_get_context.data_sources.add_or_update_pandas.return_value = mock_data_source
 
     # Call function
@@ -131,9 +129,9 @@ def test_set_data_asset(mock_get_context, mock_df, mock_config):
 
 
 def test_set_data_docs_site_try_branch(mock_get_context, mock_df, mock_config):
-    # Mock value
+    # Mocks
     mock_context = mock_get_context.return_value
-    # Mock instance
+
     mock_context.add_data_docs_site = MagicMock()
 
     # Call function
@@ -147,13 +145,12 @@ def test_set_data_docs_site_try_branch(mock_get_context, mock_df, mock_config):
 
 
 def test_set_data_docs_site_except_branch(mock_get_context, mock_df, mock_config):
-    # Mock value
+    # Mocks
     mock_get_context.add_data_docs_site = MagicMock(
         side_effect=Exception("Test exception")
     )
-    # Mock instance
     mock_get_context.update_data_docs_site = MagicMock()
-    
+
     # Call function
     result = GreatExpectationsChecker(mock_df, mock_config.CONTEXT_MODE)
     result.context = mock_get_context
@@ -171,10 +168,9 @@ def test_set_data_docs_site_except_branch(mock_get_context, mock_df, mock_config
 
 
 def test_set_batch_definition(mock_get_context, mock_df, mock_config):
-    # Mock instance
+    # Mocks
     mock_data_asset = MagicMock()
     mock_data_asset.set_data_asset = MagicMock()
-    # Mock value
     mock_get_context.data_source.add_dataframe_asset.return_value = mock_data_asset
 
     # Call function
@@ -186,18 +182,22 @@ def test_set_batch_definition(mock_get_context, mock_df, mock_config):
     mock_data_asset.add_batch_definition_whole_dataframe(
         name=mock_config.BATCH_DEFINITION
     )
-    assert result.batch_definition == mock_data_asset.add_batch_definition_whole_dataframe.return_value
+    assert (
+        result.batch_definition
+        == mock_data_asset.add_batch_definition_whole_dataframe.return_value
+    )
 
 
 def test_set_batch(mock_get_context, mock_df, mock_config):
-    # Set parameters
+    # Parameters
     batch_parameters = {"mock": mock_df}
-    
-    # Mock instance
+
+    # Mocks
     mock_batch_definition = MagicMock()
     mock_batch_definition.batch_definition = MagicMock()
-    # Mock value
-    mock_get_context.data_asset.add_batch_definition_whole_dataframe.return_value = mock_batch_definition
+    mock_get_context.data_asset.add_batch_definition_whole_dataframe.return_value = (
+        mock_batch_definition
+    )
 
     # Call function
     result = GreatExpectationsChecker(mock_df, mock_config.CONTEXT_MODE)
@@ -210,10 +210,9 @@ def test_set_batch(mock_get_context, mock_df, mock_config):
 
 
 def test_set_suite_existing_suite(mock_get_context, mock_df, mock_config):
-    # Mock value
+    # Mocks
     mock_context = mock_get_context.return_value
 
-    # Mock instance
     mock_suite = MagicMock()
     mock_context.suites.get.return_value = mock_suite
 
@@ -230,13 +229,14 @@ def test_set_suite_existing_suite(mock_get_context, mock_df, mock_config):
 
 
 @patch("great_expectations.core.expectation_suite.ExpectationSuite")
-def test_set_suite_new_suite(mock_expectation_suite, mock_get_context, mock_df, mock_config):
-    # Mock instance
-    mock_new_suite = MagicMock()
-    
-    # Mock value
+def test_set_suite_new_suite(
+    mock_expectation_suite, mock_get_context, mock_df, mock_config
+):
+    # Mocks
     mock_context = mock_get_context.return_value
     mock_context.suites.get.return_value = None
+
+    mock_new_suite = MagicMock()
     mock_expectation_suite.return_value = mock_new_suite
     mock_context.suites.add_or_update.return_value = mock_new_suite
 
@@ -245,19 +245,21 @@ def test_set_suite_new_suite(mock_expectation_suite, mock_get_context, mock_df, 
     result.context = mock_context
     result.set_suite(mock_config.SUITE_NAME)
 
-    # Assertions
+    # Asserts
     mock_context.suites.get.assert_called_once_with(mock_config.SUITE_NAME)
     mock_context.suites.add_or_update.assert_called_once()
     assert result.suite == mock_new_suite
 
 
 @patch("great_expectations.core.expectation_suite.ExpectationSuite")
-def test_set_suite_exception_handling(mock_expectation_suite, mock_get_context, mock_df, mock_config):
-    # Mock instance
+def test_set_suite_exception_handling(
+    mock_expectation_suite, mock_get_context, mock_df, mock_config
+):
+    # Mocks
     mock_new_suite = MagicMock()
-    mock_expectation_suite.side_effect = ValueError("name must be provided as a non-empty string")
-
-    # Mock value
+    mock_expectation_suite.side_effect = ValueError(
+        "name must be provided as a non-empty string"
+    )
     mock_context = mock_get_context.return_value
     mock_context.suites.get.side_effect = Exception("Suite retrieval failed")
     mock_context.suites.add.return_value = mock_new_suite
@@ -270,10 +272,9 @@ def test_set_suite_exception_handling(mock_expectation_suite, mock_get_context, 
     with pytest.raises(ValueError, match="name must be provided as a non-empty string"):
         result.set_suite(mock_config.SUITE_NAME)
 
-    # Assertions
+    # Asserts
     mock_context.suites.get.assert_called_once_with(mock_config.SUITE_NAME)
-    mock_context.suites.add.assert_not_called() 
-
+    mock_context.suites.add.assert_not_called()
 
 
 @patch("great_expectations.expectations.ExpectTableColumnsToMatchOrderedList")
@@ -288,14 +289,13 @@ def test_create_expectations(
     mock_between,
     mock_not_null,
     mock_column_type,
-    mock_columns_match
+    mock_columns_match,
 ):
-    # Mock instance
+    # Mocks
     mock_suite = MagicMock()
     result = MagicMock()
     result.suite = mock_suite
 
-    # Mock values
     mock_columns_match.return_value = MagicMock()
     mock_column_type.return_value = MagicMock()
     mock_not_null.return_value = MagicMock()
@@ -316,8 +316,129 @@ def test_create_expectations(
     assert mock_suite.add_expectation.call_count == 10
 
 
+@patch("great_expectations.core.validation_definition.ValidationDefinition")
+def test_create_validation_definition(
+    mock_validation_definition, mock_get_context, mock_df, mock_config
+):
+    # Mocks
+    mock_context = mock_get_context.return_value
+
+    mock_validation_instance = MagicMock()
+    mock_validation_definition.return_value = mock_validation_instance
+
+    mock_context.validation_definitions = MagicMock()
+    mock_context.validation_definitions.add_or_update = MagicMock(
+        return_value=mock_validation_instance
+    )
+
+    # Call function
+    result = GreatExpectationsChecker(mock_df, mock_config.CONTEXT_MODE)
+    result.context = mock_context
+    result.batch_definition = MagicMock()
+    result.suite = MagicMock()
+    check_result = result.create_validation_definition()
+
+    # Assertions
+    mock_validation_definition.assert_called_once_with(
+        name="validation definition",
+        data=result.batch_definition,
+        suite=result.suite,
+    )
+    mock_context.validation_definitions.add_or_update.assert_called_once_with(
+        mock_validation_instance
+    )
+    assert check_result is mock_validation_instance
+
+
+@patch("great_expectations.checkpoint.actions.UpdateDataDocsAction")
+@patch("great_expectations.checkpoint.checkpoint.Checkpoint")
+def test_create_checkpoint(
+    mock_checkpoint, mock_update_action, mock_get_context, mock_df, mock_config
+):
+    # Mocks
+    mock_context = mock_get_context.return_value
+    mock_validation_definition = MagicMock()
+
+    mock_action_instance = MagicMock()
+    mock_update_action.return_value = mock_action_instance
+
+    mock_checkpoint_instance = MagicMock()
+    mock_checkpoint.return_value = mock_checkpoint_instance
+
+    mock_context.checkpoints = MagicMock()
+    mock_context.checkpoints.add_or_update = MagicMock(
+        return_value=mock_checkpoint_instance
+    )
+
+    # Call function
+    result = GreatExpectationsChecker(mock_df, mock_config.CONTEXT_MODE)
+    result.context = mock_context
+
+    result_check = result.create_checkpoint(
+        mock_validation_definition, mock_config.SITE_NAME
+    )
+
+    # Asserts
+    mock_update_action.assert_called_once_with(
+        name="update_my_site", site_names=[mock_config.SITE_NAME]
+    )
+    mock_checkpoint.assert_called_once_with(
+        name="checkpoint",
+        validation_definitions=[mock_validation_definition],
+        actions=[mock_action_instance],
+        result_format="COMPLETE",
+    )
+    mock_context.checkpoints.add_or_update.assert_called_once_with(
+        mock_checkpoint_instance
+    )
+    assert result_check is mock_checkpoint_instance
+
+
+@patch("great_expectations.checkpoint.checkpoint.Checkpoint.run")
+@patch("great_expectations.checkpoint.actions.UpdateDataDocsAction")
+@patch("great_expectations.checkpoint.checkpoint.Checkpoint")
+def test_run_checkpoint(
+    mock_checkpoint,
+    mock_update_action,
+    mock_checkpoint_run,
+    mock_get_context,
+    mock_df,
+    mock_config,
+):
+    # Mocks
+    mock_context = mock_get_context.return_value
+    mock_validation_definition = MagicMock()
+
+    mock_checkpoint_instance = MagicMock()
+    mock_checkpoint_instance.run.return_value = {"success": True}
+
+    mock_checkpoint.return_value = mock_checkpoint_instance
+    mock_context.create_validation_definition = MagicMock(
+        return_value=mock_validation_definition
+    )
+    mock_context.create_checkpoint = MagicMock(return_value=mock_checkpoint_instance)
+
+    # Call function
+    result = GreatExpectationsChecker(mock_df, mock_config.CONTEXT_MODE)
+    result.context = mock_context
+    result.create_validation_definition = MagicMock(
+        return_value=mock_validation_definition
+    )
+    result.create_checkpoint = MagicMock(return_value=mock_checkpoint_instance)
+
+    checkpoint_result = result.run_checkpoint(mock_config.SITE_NAME)
+
+    # Asserts
+    result.create_validation_definition.assert_called_once()
+    result.create_checkpoint.assert_called_once_with(
+        mock_validation_definition, mock_config.SITE_NAME
+    )
+    mock_checkpoint_instance.run.assert_called_once_with({"dataframe": mock_df})
+    assert checkpoint_result == {"success": True}
+
+
 def test_generate_data_docs(mock_get_context, mock_df, mock_config):
-    # Mock value
+    # Mocks
     mock_context = mock_get_context
 
     # Call function
@@ -326,11 +447,13 @@ def test_generate_data_docs(mock_get_context, mock_df, mock_config):
     result.generate_data_docs(site_name=mock_config.SITE_NAME)
 
     # Asserts
-    mock_context.build_data_docs.assert_called_once_with(site_names=mock_config.SITE_NAME)
+    mock_context.build_data_docs.assert_called_once_with(
+        site_names=mock_config.SITE_NAME
+    )
 
 
 def test_open_report(mock_get_context, mock_df, mock_config):
-    # Mock value
+    # Mocks
     mock_context = mock_get_context
 
     # Call function
