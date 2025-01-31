@@ -41,7 +41,7 @@ This will:
 ### 4️⃣ Activate the Environment
 Run this command to activate the Poetry virtual environment:
 ```bash
-eval $(poetry env info --path)/bin/activate
+eval $(poetry env activate)
 ```
 
 ---
@@ -56,10 +56,4 @@ Execute the main script to:
 Run:
 ```bash
 python src/main.py
-```
-
-### 2️⃣ Open the Validation Report
-Use the following command to open the Great Expectations validation report in your browser:
-```bash
-make open-report
 ```
