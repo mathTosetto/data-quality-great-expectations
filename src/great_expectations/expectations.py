@@ -236,15 +236,14 @@ class GreatExpectationsChecker:
 
         Returns:
             validation_definition: The validation definition for the current validation process.
-        """
-        validation_definition = self.context.validation_definitions.add_or_update(
+        """ 
+        return self.context.validation_definitions.add_or_update(
             gx.core.validation_definition.ValidationDefinition(
                 name="validation definition",
                 data=self.batch_definition,
                 suite=self.suite,
             )
         )
-        return validation_definition
 
     def create_checkpoint(self, validation_definition, site_name: str):
         """
@@ -286,8 +285,7 @@ class GreatExpectationsChecker:
         validation_definition = self.create_validation_definition()
         checkpoint = self.create_checkpoint(validation_definition, site_name)
 
-        checkpoint_result = checkpoint.run({"dataframe": self.df})
-        return checkpoint_result
+        return checkpoint.run({"dataframe": self.df})
 
     def generate_data_docs(self, site_name: str):
         """
