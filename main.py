@@ -8,7 +8,6 @@ from src.great_expectations.expectations import GreatExpectationsChecker
 if __name__ == "__main__":
 
     url: str = "https://raw.githubusercontent.com/great-expectations/gx_tutorials/main/data/yellow_tripdata_sample_2019-01.csv"
-
     context_mode: str = "file"
     data_source: str = "pandas"
     data_asset_name: str = "Taxi Asset"
