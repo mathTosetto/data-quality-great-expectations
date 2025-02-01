@@ -1,6 +1,6 @@
 [project]
-name = "great-exp-first-project"
-version = "0.1.0"
+name = "data-quality-great-expectations-project"
+version = "0.1.1"
 description = ""
 authors = [
     {name = "Matheus"}
