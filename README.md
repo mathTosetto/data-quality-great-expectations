@@ -18,14 +18,14 @@ The goal is to:
 ## ⚡ **Installation & Setup**
 ### 1️⃣ **Install Poetry** (if not installed)
 ```sh
-curl -sSL https://install.python-poetry.org | python3 -
+pip install poetry
 ```
 
 ### 2️⃣ Clone the Repository
 Run the following command to clone this project:
 ```bash
-git clone https://github.com/yourusername/great-exp-first-project.git
-cd great-exp-first-project
+git clone https://github.com/mathTosetto/data-quality-great-expectations.git
+cd data-quality-great-expectations-project
 ```
 
 ### 3️⃣ Set Up the Environment
