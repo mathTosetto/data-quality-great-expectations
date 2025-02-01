@@ -1,8 +1,10 @@
-.PHONY: install activate test open-report
+.PHONY: install activate test
 
 install:
-	poetry install
+	poetry install --no-root
 
 activate:
 	eval $(poetry env activate)
 
+test:
+	pytest -W ignore tests/
