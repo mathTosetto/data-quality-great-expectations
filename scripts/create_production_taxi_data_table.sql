@@ -1,4 +1,6 @@
-CREATE TABLE taxi_data (
+CREATE SCHEMA production;
+
+CREATE TABLE production.taxi_data (
     vendor_id INT NOT NULL,
     pickup_datetime TIMESTAMP NOT NULL,
     dropoff_datetime TIMESTAMP NOT NULL,
