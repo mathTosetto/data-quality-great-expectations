@@ -72,3 +72,6 @@ docs/_build/
 
 # Outputs
 data/02_output/
+
+# Poetry
+*.lock
