@@ -2,7 +2,7 @@ import pytest
 import pandas as pd
 
 from unittest.mock import patch, MagicMock
-from src.utils.data_loader import TaxiDataLoader
+from src.utils.data_extractor import TaxiDataExtractor
 
 
 @pytest.fixture
@@ -16,7 +16,7 @@ def mock_csv_data():
 
 @pytest.fixture
 def mock_taxi_data_loader():
-    return TaxiDataLoader("https://mock.test")
+    return TaxiDataExtractor("https://mock.test")
 
 
 def test_initilization(mock_taxi_data_loader):
@@ -29,7 +29,7 @@ def test_initilization(mock_taxi_data_loader):
 def test_not_initilized(url):
     # Mock value
     with pytest.raises(ValueError, match="URL must be a string"):
-        TaxiDataLoader(url)
+        TaxiDataExtractor(url)
 
 
 def test_load_data_success(mock_taxi_data_loader, mock_csv_data, monkeypatch):

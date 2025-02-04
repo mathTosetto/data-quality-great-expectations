@@ -1,7 +1,8 @@
 import pandas as pd
 
 from typing import Dict
-from src.utils.data_loader import TaxiDataLoader
+from src.utils.data_extractor import TaxiDataExtractor
+from src.utils.data_loader import DataLoader
 from src.great_expectations.expectations import GreatExpectationsChecker
 
 
@@ -26,9 +27,17 @@ if __name__ == "__main__":
         },
     }
 
-    taxi_data_loader: TaxiDataLoader = TaxiDataLoader(url)
-    taxi_data_loader.load_data()
-    df: pd.DataFrame = taxi_data_loader.get_data()
+    taxi_data_extractor: TaxiDataExtractor = TaxiDataExtractor(url)
+    taxi_data_extractor.load_data()
+    df: pd.DataFrame = taxi_data_extractor.get_data()
+
+    data_loader: DataLoader = DataLoader(df)
+    data_loader.write_to_sql(
+        table_name="stg_taxi_data",
+        schema="stage",
+        if_exists="append",
+        index=False,
+    )
 
     great_expectations_checker: GreatExpectationsChecker = GreatExpectationsChecker(df, context_mode)
     great_expectations_checker.set_data_source(data_source)
