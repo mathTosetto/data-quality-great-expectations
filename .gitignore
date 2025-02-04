@@ -75,3 +75,6 @@ data/02_output/
 
 # Poetry
 *.lock
+
+# MacOS
+**/.DS_Store
