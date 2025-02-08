@@ -6,16 +6,16 @@ import pandas as pd
 import sqlalchemy as sa
 
 from dotenv import load_dotenv
-from src.utils.my_logger import setup_logging
+from src.utils.my_logger import LoggerSetup
 
 load_dotenv()
 
-logger = logging.getLogger("class DataLoader")
+logger: logging = logging.getLogger("class DataLoader")
 
 
 class DataLoader:
     def __init__(self, df: pd.DataFrame):
-        setup_logging()
+        LoggerSetup()
 
         if isinstance(df, pd.DataFrame):
             self.df = df

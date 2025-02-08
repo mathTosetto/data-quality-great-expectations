@@ -3,9 +3,9 @@ import logging.handlers
 
 import pandas as pd
 
-from src.utils.my_logger import setup_logging
+from src.utils.my_logger import LoggerSetup
 
-logger = logging.getLogger("class TaxiDataExtractor")
+logger: logging = logging.getLogger("class TaxiDataExtractor")
 
 
 class TaxiDataExtractor:
@@ -44,7 +44,7 @@ class TaxiDataExtractor:
         Raises:
             ValueError: If the provided URL is not a string.
         """
-        setup_logging()
+        LoggerSetup()
 
         if isinstance(url, str):
             self.url = url
