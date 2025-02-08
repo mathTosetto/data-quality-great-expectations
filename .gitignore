@@ -22,6 +22,7 @@ notebooks/
 
 # pytest
 .pytest_cache/
+htmlcov/
 
 # ruff
 .ruff_cache/
