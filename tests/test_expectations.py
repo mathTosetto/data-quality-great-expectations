@@ -72,8 +72,7 @@ def mock_df():
 @pytest.fixture
 def mock_get_context():
     with patch("src.great_expectations.expectations.gx.get_context") as mock:
-        mock_context = MagicMock()
-        mock.return_value = mock_context
+        mock.return_value = MagicMock()
         yield mock
 
 
