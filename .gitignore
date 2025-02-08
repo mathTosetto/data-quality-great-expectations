@@ -78,3 +78,6 @@ data/02_output/
 
 # MacOS
 **/.DS_Store
+
+# Logs
+*.jsonl
