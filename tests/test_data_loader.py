@@ -1,114 +1,87 @@
+import os
 import pytest
 import pandas as pd
 
-from unittest.mock import MagicMock
-from src.utils.data_extractor import TaxiDataExtractor
+from unittest.mock import MagicMock, patch
+from src.utils.data_loader import DataLoader
 
 
 @pytest.fixture
-def mock_csv_data():
-    data = {
-        "pickup_datetime": ["2025-01-01 08:00:00", "2025-01-01 09:00:00"],
-        "dropoff_datetime": ["2025-01-01 08:30:00", "2025-01-01 09:30:00"],
+def mock_df():
+    mock_data = {
+        "id": [1, 2, 3],
+        "name": ["Alice", "Bob", "Charlie"],
+        "age": [25, 30, 35],
+        "date_of_birth": ["1995-01-01", "1990-05-12", "1985-07-24"],
     }
-    return pd.DataFrame(data)
+    return pd.DataFrame(mock_data)
 
 
 @pytest.fixture
-def mock_taxi_data_loader():
-    return TaxiDataExtractor("https://mock.test")
+def mock_create_engine():
+    with patch("sqlalchemy.create_engine") as mock_create_engine:
+        mock_create_engine.return_value = MagicMock()
+        yield mock_create_engine
 
 
-def test_initilization(mock_taxi_data_loader):
-    # Asserts
-    assert mock_taxi_data_loader.url == "https://mock.test"
-    assert mock_taxi_data_loader.df == None
+@pytest.fixture
+def mock_db_connection_url():
+    # Parameters
+    mock_connection_string = "mock_db_string_connection"
+
+    with patch.dict(os.environ, {"CONNECTION_STRING": mock_connection_string}):
+        yield mock_connection_string
 
 
-@pytest.mark.parametrize("url", [1, 1.0, True, None, {}, [], object()])
-def test_not_initilized(url):
-    # Mock value
-    with pytest.raises(ValueError, match="URL must be a string"):
-        TaxiDataExtractor(url)
+@pytest.fixture
+def mock_logger():
+    with patch("src.utils.data_loader.logger") as mock_logger:
+        yield mock_logger
 
 
-def test_load_data_success(mock_taxi_data_loader, mock_csv_data, monkeypatch):
-    def mock_read_csv(url):
-        return mock_csv_data
-
-    # Mock value
-    monkeypatch.setattr(pd, "read_csv", mock_read_csv)
-    mock_taxi_data_loader.load_data()
-
+@patch("src.utils.data_loader.LoggerSetup")
+def test_initilization(
+    mock_logger_setup, mock_db_connection_url, mock_create_engine, mock_df
+):
     # Call function
-    result = mock_taxi_data_loader.df
-
-    # Asserts
-    assert result is not None
-    assert not result.empty
-    assert isinstance(result, pd.DataFrame)
-    assert list(result.columns) == ["pickup_datetime", "dropoff_datetime"]
-    assert pd.api.types.is_datetime64_any_dtype(result["pickup_datetime"])
-    assert pd.api.types.is_datetime64_any_dtype(result["dropoff_datetime"])
-
-
-def test_load_data_failed(mock_taxi_data_loader, monkeypatch):
-    # Set parameters
-    mock_csv_data = None
-
-    # Mock value
-    monkeypatch.setattr(pd, "read_csv", mock_csv_data)
-    mock_taxi_data_loader.load_data()
-
-    # Call function
-    result = mock_taxi_data_loader.df
+    result = DataLoader(mock_df)
 
     # Asserts
-    assert result is None
+    mock_logger_setup.assert_called_once()
+    mock_create_engine.assert_called_once_with(mock_db_connection_url)
+    assert isinstance(result.df, pd.DataFrame)
+    assert len(result.df) == 3
+    assert result.engine is not None
+    assert result.engine is mock_create_engine.return_value
 
 
-@pytest.mark.skip(reason="Review")
-def test_load_data_exception(mock_taxi_data_loader, monkeypatch, capfd):
-    def mock_read_csv(url):
-        raise Exception("Mocked CSV read error")
-
+@pytest.mark.parametrize("df", [1, 1.0, True, None, {}, [], object()])
+def test_not_initilized(mock_logger, df):
     # Mock value
-    monkeypatch.setattr(pd, "read_csv", mock_read_csv)
-    
-    # Call function
-    mock_taxi_data_loader.load_data()
-
-    # Capture error
-    captured = capfd.readouterr()
+    with pytest.raises(ValueError, match="The input value is not a Dataframe."):
+        DataLoader(df)
 
     # Asserts
-    assert "Error loading data: Mocked CSV read error" in captured.out
+    mock_logger.error.assert_any_call("The input value is not a Dataframe.")
 
 
-def test_get_data(mock_taxi_data_loader, mock_csv_data, monkeypatch):
-    def mock_read_csv(url):
-        return mock_csv_data
+@patch("pandas.DataFrame.to_sql")
+@patch("builtins.print")
+def test_write_to_sql(
+    mock_print, mock_to_sql, mock_logger, mock_create_engine, mock_df
+):
+    # Parameters
+    table_name = "mock_table_name"
 
-    # Mock value
-    monkeypatch.setattr(pd, "read_csv", mock_read_csv)
-    mock_taxi_data_loader.load_data()
+    # Mocks
+    mock_engine = mock_create_engine.return_value
+    mock_to_sql.return_value = None
 
     # Call function
-    result = mock_taxi_data_loader.get_data()
+    data_loader = DataLoader(mock_df)
+    data_loader.write_to_sql(table_name=table_name, index=False)
 
     # Asserts
-    assert result is not None
-    pd.testing.assert_frame_equal(result, mock_csv_data)
-
-
-def test_get_data_no_data(mock_taxi_data_loader):
-    # Set parameters
-    mock_taxi_data_loader = MagicMock()
-    mock_taxi_data_loader.df = None
-
-    # Mock value
-    mock_taxi_data_loader.get_data.side_effect = ValueError("Data has not been loaded or processed yet.")
-
-    # Call function
-    with pytest.raises(ValueError, match="Data has not been loaded or processed yet."):
-        mock_taxi_data_loader.get_data()
+    mock_to_sql.assert_called_once_with(name=table_name, con=mock_engine, index=False)
+    mock_logger.info.assert_called_once_with(f"3 rows written to {table_name}.")
+    mock_print.assert_called_once_with(f"3 rows written to {table_name}.")
