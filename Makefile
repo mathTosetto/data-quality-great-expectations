@@ -7,7 +7,7 @@ activate:
 	eval $(poetry env activate)
 
 test:
-	pytest -W ignore tests/
+	pytest -W ignore --cov=tests/
 
 up:
 	@if [ ! -f .env ]; then \
