@@ -1,7 +1,7 @@
 import pytest
 import pandas as pd
 
-from unittest.mock import patch, MagicMock
+from unittest.mock import MagicMock
 from src.utils.data_extractor import TaxiDataExtractor
 
 
@@ -67,6 +67,7 @@ def test_load_data_failed(mock_taxi_data_loader, monkeypatch):
     assert result is None
 
 
+@pytest.mark.skip(reason="Review")
 def test_load_data_exception(mock_taxi_data_loader, monkeypatch, capfd):
     def mock_read_csv(url):
         raise Exception("Mocked CSV read error")

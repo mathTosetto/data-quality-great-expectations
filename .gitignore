@@ -9,7 +9,7 @@ __pycache__/
 *.py[cod]
 
 # Notebook
-notebook/
+notebooks/
 
 # C extensions
 *.so
