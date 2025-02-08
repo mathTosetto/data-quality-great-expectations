@@ -75,7 +75,6 @@ def test_write_to_sql(
 
     # Mocks
     mock_engine = mock_create_engine.return_value
-    mock_to_sql.return_value = None
 
     # Call function
     data_loader = DataLoader(mock_df)
