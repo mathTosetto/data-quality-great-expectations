@@ -32,7 +32,7 @@ class MyJSONFormatter(logging.Formatter):
             always_fields["exc_info"] = self.formatException(record.exc_info)
 
         if record.stack_info is not None:
-            always_fields["stack_info"] = self.formatException(record.stack_info)
+            always_fields["stack_info"] = record.stack_info
 
         message = {
             key: msg_val
@@ -45,14 +45,16 @@ class MyJSONFormatter(logging.Formatter):
         return message
 
 
-def setup_logging():
-    create_logs_folder()
+class LoggerSetup:
+    def __init__(self, config_path: str = "logs/logging_json/logging_config.json"):
+        self.config_path = Path(config_path)
+        self._create_logs_folder()
+        self._setup_logging()
 
-    config_file = Path("logs/logging_json/logging_config.json")
-    with open(config_file) as cfg:
-        config = json.load(cfg)
-    logging.config.dictConfig(config=config)
+    def _create_logs_folder(self):
+        Path("logs").mkdir(exist_ok=True)
 
-
-def create_logs_folder():
-    Path("logs").mkdir(exist_ok=True)
+    def _setup_logging(self):
+        with open(self.config_path) as cfg:
+            config = json.load(cfg)
+        logging.config.dictConfig(config=config)
