@@ -1,16 +1,16 @@
 {
   "data": {
     "asset": {
-      "id": "718ffc3d-3d2c-43ba-a106-f75659a2aa78",
+      "id": "df9e76f8-0d9d-492f-9d41-64acf295d036",
       "name": "postgres_stg_taxi_data"
     },
     "batch_definition": {
-      "id": "150ceec6-2111-4173-aab8-8cbf762f8ace",
+      "id": "9fbd58fc-1659-44d7-a477-4d9dbcbe8a4c",
       "name": "taxi_batch_definition"
     },
     "datasource": {
-      "id": "34e84d10-3058-4f49-a095-0342c9d555cb",
-      "name": "taxi_data_data_source"
+      "id": "15d909d9-1027-4078-887e-457a60aab6a0",
+      "name": "taxi_data_source"
     }
   },
   "id": "be952d28-b8a0-4907-9ca8-f684df7436e8",

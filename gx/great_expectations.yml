@@ -104,5 +104,20 @@ fluent_datasources:
         table_name: stg_taxi_data
         schema_name: stage
     connection_string: postgresql://postgres:postgres@localhost:5432/postgres
+  taxi_data_source:
+    type: postgres
+    id: 15d909d9-1027-4078-887e-457a60aab6a0
+    assets:
+      postgres_stg_taxi_data:
+        type: table
+        id: df9e76f8-0d9d-492f-9d41-64acf295d036
+        batch_metadata: {}
+        batch_definitions:
+          taxi_batch_definition:
+            id: 9fbd58fc-1659-44d7-a477-4d9dbcbe8a4c
+            partitioner:
+        table_name: stg_taxi_data
+        schema_name: stage
+    connection_string: postgresql://postgres:postgres@localhost:5432/postgres
 analytics_enabled:
 data_context_id: 3f3b5623-b77e-45d2-841d-5f1c73f38738

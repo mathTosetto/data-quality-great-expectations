@@ -17,11 +17,11 @@ class GreatExpectationsPandasChecker(GreatExpectationsChecker):
 
     def set_data_asset(self, data_asset_name: str) -> None:
         """Set up a Pandas data asset."""
-        self.data_source = self.data_source.add_dataframe_asset(name=data_asset_name)
+        self.data_asset = self.data_source.add_dataframe_asset(name=data_asset_name)
 
     def set_batch_definition(self, batch_definition) -> None:
         """Define the batch for Pandas DataFrame."""
-        self.batch_definition = self.data_source.add_batch_definition_whole_dataframe(
+        self.batch_definition = self.data_asset.add_batch_definition_whole_dataframe(
             batch_definition
         )
 
