@@ -89,17 +89,20 @@ data_docs_sites:
       class_name: TupleFilesystemStoreBackend
       base_directory: uncommitted/data_docs/local_site/
 fluent_datasources:
-  pandas:
-    type: pandas
-    id: af613ad9-afb0-4b36-8c59-b593bd552964
+  taxi_data_data_source:
+    type: postgres
+    id: 34e84d10-3058-4f49-a095-0342c9d555cb
     assets:
-      Taxi Asset:
-        type: dataframe
-        id: 40c55584-8d2f-4c59-8b44-3c3406d508e6
+      postgres_stg_taxi_data:
+        type: table
+        id: 718ffc3d-3d2c-43ba-a106-f75659a2aa78
         batch_metadata: {}
         batch_definitions:
           taxi_batch_definition:
-            id: a93835c6-7a51-4d07-8945-2bad202ad125
+            id: 150ceec6-2111-4173-aab8-8cbf762f8ace
             partitioner:
+        table_name: stg_taxi_data
+        schema_name: stage
+    connection_string: postgresql://postgres:postgres@localhost:5432/postgres
 analytics_enabled:
-data_context_id: 731a12a3-8f7a-4667-987d-556b95648a2a
+data_context_id: 3f3b5623-b77e-45d2-841d-5f1c73f38738

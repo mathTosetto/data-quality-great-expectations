@@ -1,7 +1,7 @@
 {
   "expectations": [
     {
-      "id": "11934853-b0e0-4dbb-b93b-051edc1f10e3",
+      "id": "c79e5fff-e116-4593-b644-48303d949568",
       "kwargs": {
         "column": "vendor_id",
         "type_": "Integer"
@@ -10,10 +10,10 @@
       "type": "expect_column_values_to_be_of_type"
     }
   ],
-  "id": "91c9a5c1-e2ed-45c0-9987-49c094c98637",
+  "id": "928f50a3-c580-4ee4-bc80-0739f0c5b04a",
   "meta": {
     "great_expectations_version": "1.3.3"
   },
-  "name": "taxi_suite_checks",
+  "name": "sql_taxi_table",
   "notes": null
 }

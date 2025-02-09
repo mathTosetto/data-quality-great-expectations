@@ -8,12 +8,12 @@
       "type": "update_data_docs"
     }
   ],
-  "id": "00bcf695-5e3c-4f0c-aba9-e10758a80ed5",
+  "id": "1558c19d-66c1-470e-a5e1-41df789f226c",
   "name": "checkpoint",
   "result_format": "COMPLETE",
   "validation_definitions": [
     {
-      "id": "43237b06-57c3-4a3c-a794-be3477d7f437",
+      "id": "be952d28-b8a0-4907-9ca8-f684df7436e8",
       "name": "validation definition"
     }
   ]
