@@ -134,7 +134,7 @@ def test_set_batch_definition(mock_get_context, mock_df, mock_config):
     )
 
 
-@pytest.mark.skip(reason="Review later on")
+# @pytest.mark.skip(reason="Review later on")
 @patch("great_expectations.expectations.ExpectTableColumnsToMatchOrderedList")
 @patch("great_expectations.expectations.ExpectColumnValuesToBeOfType")
 @patch("great_expectations.expectations.ExpectColumnValuesToNotBeNull")
