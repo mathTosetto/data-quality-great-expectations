@@ -77,7 +77,7 @@ def test_run_expectations(mock_getenv, mock_ge_checker):
     # Asserts
     assert result is True
     mock_getenv.assert_called_once_with("CONNECTION_STRING")
-    # mock_ge_checker.assert_called_once_with("mode")  # Ensure context mode is correct
+    mock_ge_checker.assert_called_once()
 
     # Verify that all the methods were called
     expected_calls = [
@@ -90,15 +90,33 @@ def test_run_expectations(mock_getenv, mock_ge_checker):
         "run_checkpoint",
         "generate_data_docs",
     ]
-    
+
     for method in expected_calls:
         method_mock = getattr(mock_checker_instance, method)
-        try:
-            method_mock.assert_called_once()
-        except AssertionError:
-            print(f"❌ Method {method} was not called as expected.")
+        method_mock.assert_called_once()
 
     mock_checker_instance.run_checkpoint.assert_called_once()
+
+
+@patch("os.getenv")
+@patch("main.GreatExpectationsPostgresChecker")
+def test_run_expectations_logs_warning_on_failure(mock_ge_checker, mock_getenv, caplog):
+    """Test if logger.warning is called when expectations fail."""
+    # Mocks
+    mock_getenv.return_value = "mock_connection_string"
+    mock_checker_instance = mock_ge_checker.return_value
+
+    mock_checkpoint_result = MagicMock()
+    mock_checkpoint_result.success = False
+    mock_checker_instance.run_checkpoint.return_value = mock_checkpoint_result
+
+    # Call function
+    with caplog.at_level("WARNING"):
+        result = run_expectations()
+
+    # Asserts
+    assert result is False
+    assert "❌ Great Expectations validation failed." in caplog.text
 
 
 @patch("main.GreatExpectationsPostgresChecker")
