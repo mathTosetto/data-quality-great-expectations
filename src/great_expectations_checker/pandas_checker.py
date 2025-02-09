@@ -1,7 +1,7 @@
 import pandas as pd
 import great_expectations.expectations as gxe
 
-from base_checker import GreatExpectationsChecker
+from .base_checker import GreatExpectationsChecker
 
 
 class GreatExpectationsPandasChecker(GreatExpectationsChecker):
