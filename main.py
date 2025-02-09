@@ -4,7 +4,9 @@ import pandas as pd
 
 from src.utils.data_extractor import TaxiDataExtractor
 from src.utils.data_loader import DataLoader
-from src.great_expectations.expectations import GreatExpectationsPostgresChecker
+from src.great_expectations_checker.postgres_checker import (
+    GreatExpectationsPostgresChecker,
+)
 from src.config.config import (
     URL,
     CONTEXT_MODE,
@@ -19,14 +21,14 @@ logger: logging = logging.getLogger("class Main")
 
 def load_taxi_data(url: str) -> pd.DataFrame:
     """Load data from the provided URL and return as a pandas DataFrame."""
-    logger.info("Extracting taxi data from URL...")
-    taxi_data_extractor = TaxiDataExtractor(url)
-    taxi_data_extractor.load_data()
-    return taxi_data_extractor.get_data()
+    logger.info("Extracting taxi data from URL: %s", url)
+    extractor = TaxiDataExtractor(url)
+    extractor.load_data()
+    return extractor.get_data()
 
 
 def load_data_to_sql(df: pd.DataFrame) -> DataLoader:
-    """Load DataFrame into SQL."""
+    """Load DataFrame into SQL staging table."""
     logger.info("Loading data into staging SQL table...")
     data_loader = DataLoader(df)
     data_loader.write_to_sql(
@@ -38,38 +40,41 @@ def load_data_to_sql(df: pd.DataFrame) -> DataLoader:
     return data_loader
 
 
-def run_expectations(df: pd.DataFrame) -> bool:
+def run_expectations() -> bool:
     """Run Great Expectations checks and generate data docs."""
     logger.info("Running Great Expectations validation...")
 
-    great_expectations_checker = GreatExpectationsPostgresChecker(CONTEXT_MODE)
-    great_expectations_checker.set_data_source(
-        "taxi_data_data_source", os.getenv("CONNECTION_STRING")
-    )
-    great_expectations_checker.set_data_asset(
-        "postgres_stg_taxi_data", "stg_taxi_data", "stage"
-    )
-    great_expectations_checker.set_data_docs_site(SITE_NAME, SITE_CONFIG)
-    great_expectations_checker.set_batch_definition(BATCH_DEFINITION)
-    great_expectations_checker.set_suite(SUITE_NAME)
+    connection_string = os.getenv("CONNECTION_STRING")
+    if not connection_string:
+        logger.error(
+            "Missing database connection string. Check your environment variables."
+        )
+        raise ValueError("Database connection string not set.")
 
-    great_expectations_checker.create_expectations()
-    result = great_expectations_checker.run_checkpoint(SITE_NAME)
+    ge_checker = GreatExpectationsPostgresChecker(CONTEXT_MODE)
+    ge_checker.set_data_source("taxi_data_source", connection_string)
+    ge_checker.set_data_asset("postgres_stg_taxi_data", "stg_taxi_data", "stage")
+    ge_checker.set_data_docs_site(SITE_NAME, SITE_CONFIG)
+    ge_checker.set_batch_definition(BATCH_DEFINITION)
+    ge_checker.set_suite(SUITE_NAME)
+
+    ge_checker.create_expectations()
+    result = ge_checker.run_checkpoint(SITE_NAME)
 
     if result.success:
-        logger.info("Great Expectations validation passed ✅")
+        logger.info("✅ Great Expectations validation passed.")
     else:
-        logger.warning("Great Expectations validation failed ❌")
+        logger.warning("❌ Great Expectations validation failed.")
 
-    great_expectations_checker.generate_data_docs(SITE_NAME)
+    ge_checker.generate_data_docs(SITE_NAME)
 
     return result.success
 
 
-def validate_expectations(data_loader: DataLoader, is_expectation_validate: bool):
-    """Validate data expectations and move data accordingly."""
-    if is_expectation_validate:
-        logger.info("Expectations passed, moving data to production table...")
+def validate_expectations(data_loader: DataLoader, expectations_passed: bool):
+    """Validate expectations and move data accordingly."""
+    if expectations_passed:
+        logger.info("✅ Expectations passed. Moving data to production table...")
         data_loader.write_to_sql(
             table_name="taxi_data",
             schema="production",
@@ -77,7 +82,7 @@ def validate_expectations(data_loader: DataLoader, is_expectation_validate: bool
             index=False,
         )
     else:
-        logger.error("Expectations failed! Opening validation report.")
+        logger.error("❌ Expectations failed! Opening validation report.")
         GreatExpectationsPostgresChecker(CONTEXT_MODE).open_report()
         raise ValueError("Data validation failed! Please review your expectations.")
 
@@ -85,16 +90,13 @@ def validate_expectations(data_loader: DataLoader, is_expectation_validate: bool
 def main():
     """Main execution pipeline."""
     try:
-        df: pd.DataFrame = load_taxi_data(URL)
-
-        data_loader: DataLoader = load_data_to_sql(df)
-
-        is_expectation_validate: bool = run_expectations(df)
-
-        validate_expectations(data_loader, is_expectation_validate)
+        df = load_taxi_data(URL)
+        data_loader = load_data_to_sql(df)
+        expectations_passed = run_expectations()
+        validate_expectations(data_loader, expectations_passed)
 
     except Exception as e:
-        logger.exception(f"Error in pipeline execution: {e}")
+        logger.exception("🚨 Error in pipeline execution: %s", e)
         raise
 
 
