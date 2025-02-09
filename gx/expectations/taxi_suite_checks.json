@@ -1,7 +1,7 @@
 {
   "expectations": [
     {
-      "id": "f020b857-a7c7-4f14-8f94-21fa1516656a",
+      "id": "3e0656bc-5f62-41fb-8d93-f06fdd7058f3",
       "kwargs": {
         "column": "vendor_id",
         "type_": "Integer"

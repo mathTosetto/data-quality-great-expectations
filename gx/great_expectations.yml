@@ -110,11 +110,11 @@ fluent_datasources:
     assets:
       postgres_stg_taxi_data:
         type: table
-        id: df9e76f8-0d9d-492f-9d41-64acf295d036
+        id: e457f77f-0453-48da-8edb-0a26b7b45cc2
         batch_metadata: {}
         batch_definitions:
           taxi_batch_definition:
-            id: 9fbd58fc-1659-44d7-a477-4d9dbcbe8a4c
+            id: 76663bbb-2335-4aa2-8114-6bedeb2dbf97
             partitioner:
         table_name: stg_taxi_data
         schema_name: stage
