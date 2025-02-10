@@ -109,14 +109,14 @@ def test_set_batch_definition(mock_get_context, mock_config):
     )
 
 
-def test_create_expectations(mock_get_context):
+def test_create_expectations(mock_get_context, mock_config):
     # Mocks
     mock_context = mock_get_context.return_value
     mock_suite = MagicMock()
     mock_suite.expectations = []
 
     # Call function
-    result = GreatExpectationsPostgresChecker("mock_mode")
+    result = GreatExpectationsPostgresChecker(mock_config.CONTEXT_MODE)
     result.context = mock_context
     result.suite = mock_suite
     result._update_suite = MagicMock()

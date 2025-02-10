@@ -150,9 +150,9 @@ def test_create_expectations(
     mock_columns_match,
     mock_get_context,
     mock_df,
-    mock_config
+    mock_config,
 ):
-    # Mocks for the expectation classes themselves
+    # Mocks
     mock_columns_match.return_value = MagicMock()
     mock_column_type.return_value = MagicMock()
     mock_not_null.return_value = MagicMock()
@@ -160,34 +160,23 @@ def test_create_expectations(
     mock_in_set.return_value = MagicMock()
     mock_row_count.return_value = MagicMock()
 
-    # Mock the context and suite setup
-    mock_context = MagicMock()
+    mock_context = mock_get_context.return_value
     mock_suite = MagicMock()
-    mock_suite.expectations = []  # Ensure expectations is an empty list
+    mock_suite.expectations = []
 
-    # Set the suite's expectations to an empty list
-    mock_context.suites.get.return_value = mock_suite  # This is where the suite is retrieved
-    mock_context.suites.add_or_update.return_value = mock_suite  # This ensures the suite can be updated
+    mock_context.suites.get.return_value = mock_suite
+    mock_context.suites.add_or_update.return_value = mock_suite
 
-    # Simulate the behavior of `get_context`
-    mock_get_context.return_value = mock_context
+    # Call function
+    result = GreatExpectationsPandasChecker(mock_df, mock_config.CONTEXT_MODE)
+    result.context = mock_context
+    result.suite = mock_suite
+    result._update_suite = MagicMock()
+    result.create_expectations()
 
-    # Create the checker instance
-    checker = GreatExpectationsPandasChecker(mock_df, mock_config['CONTEXT_MODE'])
-
-    # Call the function to test
-    checker.create_expectations()
-
-    # Assert that expectations were added to the suite
-    mock_suite.add_expectation.assert_any_call(mock_columns_match.return_value)
-    mock_suite.add_expectation.assert_any_call(mock_column_type.return_value)
-    mock_suite.add_expectation.assert_any_call(mock_not_null.return_value)
-    mock_suite.add_expectation.assert_any_call(mock_between.return_value)
-    mock_suite.add_expectation.assert_any_call(mock_in_set.return_value)
-    mock_suite.add_expectation.assert_any_call(mock_row_count.return_value)
-
-    # Ensure that add_expectation is called 10 times (for the 10 expectations in create_expectations)
-    assert mock_suite.add_expectation.call_count == 10
+    # Asserts
+    assert len(result.suite.expectations) == 10
+    result._update_suite.assert_called_once()
 
 
 def test_update_suite(mock_get_context, mock_df, mock_config):
