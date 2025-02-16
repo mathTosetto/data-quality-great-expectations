@@ -1,6 +1,9 @@
+import logging
 import great_expectations.expectations as gxe
 
 from .base_checker import GreatExpectationsChecker
+
+logger: logging.Logger = logging.getLogger("class GreatExpectationsPostgresChecker")
 
 
 class GreatExpectationsPostgresChecker(GreatExpectationsChecker):

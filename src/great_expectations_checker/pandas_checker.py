@@ -1,7 +1,10 @@
+import logging
 import pandas as pd
 import great_expectations.expectations as gxe
 
 from .base_checker import GreatExpectationsChecker
+
+logger: logging.Logger = logging.getLogger("class GreatExpectationsPandasChecker")
 
 
 class GreatExpectationsPandasChecker(GreatExpectationsChecker):

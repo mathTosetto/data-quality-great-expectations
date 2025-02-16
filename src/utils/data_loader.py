@@ -1,6 +1,5 @@
 import os
-import logging.config
-import logging.handlers
+import logging
 
 import pandas as pd
 import sqlalchemy as sa

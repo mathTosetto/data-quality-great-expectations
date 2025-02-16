@@ -1,5 +1,9 @@
+import logging
 import great_expectations as gx
+
 from typing import Dict
+
+logger: logging.Logger = logging.getLogger("class GreatExpectationsChecker")
 
 
 class GreatExpectationsChecker:
