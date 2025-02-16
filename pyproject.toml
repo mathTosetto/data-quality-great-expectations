@@ -1,7 +1,7 @@
 [project]
 name = "data-quality-great-expectations-project"
 version = "0.1.1"
-description = ""
+description = "A project to implement data quality checks using Great Expectations."
 authors = [
     {name = "Matheus"}
 ]
@@ -23,4 +23,10 @@ build-backend = "poetry.core.masonry.api"
 [tool.poetry.group.dev.dependencies]
 pytest = "^8.3.4"
 pytest-cov = "^6.0.0"
+ruff = "^0.9.6"
 
+[[tool.poetry.packages]]
+include = "src"
+
+[tool.poetry.scripts]
+main = "main:main"
