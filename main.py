@@ -119,7 +119,6 @@ def validate_expectations(data_loader: DataLoader, expectations_passed: bool):
         logger.info("🗑️ Dropping staging table: stage.stg_taxi_data...")
         with data_loader.engine.connect() as connection:
             connection.execute(sa.text("DROP TABLE IF EXISTS stage.stg_taxi_data;"))
-            connection.commit()
         logger.info("✅ Staging table dropped successfully.")
 
     else:
