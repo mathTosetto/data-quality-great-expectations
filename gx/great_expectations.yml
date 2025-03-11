@@ -89,35 +89,20 @@ data_docs_sites:
       class_name: TupleFilesystemStoreBackend
       base_directory: uncommitted/data_docs/local_site/
 fluent_datasources:
-  taxi_data_data_source:
-    type: postgres
-    id: 34e84d10-3058-4f49-a095-0342c9d555cb
-    assets:
-      postgres_stg_taxi_data:
-        type: table
-        id: 718ffc3d-3d2c-43ba-a106-f75659a2aa78
-        batch_metadata: {}
-        batch_definitions:
-          taxi_batch_definition:
-            id: 150ceec6-2111-4173-aab8-8cbf762f8ace
-            partitioner:
-        table_name: stg_taxi_data
-        schema_name: stage
-    connection_string: postgresql://postgres:postgres@localhost:5432/postgres
   taxi_data_source:
     type: postgres
-    id: 15d909d9-1027-4078-887e-457a60aab6a0
+    id: 34dfc55f-df99-446a-8d81-f2d3811c2fc2
     assets:
       postgres_stg_taxi_data:
         type: table
-        id: e457f77f-0453-48da-8edb-0a26b7b45cc2
+        id: 0eb655f2-82f0-46cd-981a-0b62e7e3633d
         batch_metadata: {}
         batch_definitions:
           taxi_batch_definition:
-            id: 76663bbb-2335-4aa2-8114-6bedeb2dbf97
+            id: b33427a1-610b-48a6-b2e4-1f29d547974d
             partitioner:
         table_name: stg_taxi_data
         schema_name: stage
-    connection_string: postgresql://postgres:postgres@localhost:5432/postgres
+    connection_string: postgresql://postgres:postgres@postgres:5432/postgres
 analytics_enabled:
-data_context_id: 3f3b5623-b77e-45d2-841d-5f1c73f38738
+data_context_id: b4603edb-f697-4afd-85c8-8c68505819d6
